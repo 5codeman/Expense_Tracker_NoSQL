@@ -1,8 +1,9 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+const db = require('./util/database');
 const express = require('express');
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 9500;
 const app = express();
 
 //parse the form data sent with post request
@@ -14,8 +15,8 @@ app.use(bodyParser.json()); // It parses only json object(when any request post 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-// connect to the mysql DB
-const sequelize = require('./util/database');
+// // connect to the mysql DB
+// const sequelize = require('./util/database');
 const User = require('./models/user');  // ? What is use of this
 const Expense = require('./models/expense'); // ? What is use of this
 const Premium = require('./models/premium');
@@ -29,24 +30,31 @@ app.use('/', require('./router/user'));
 app.use('/user', require('./router/user'));
 app.use('/expense', require('./router/expense'));
 
-//By this a foreign key is added in expense table which is a primary key of user table
-User.hasMany(Expense);
-Expense.belongsTo(User);
+// //By this a foreign key is added in expense table which is a primary key of user table
+// User.hasMany(Expense);
+// Expense.belongsTo(User);
 
-User.hasMany(Premium);
-Premium.belongsTo(User);
+// User.hasMany(Premium);
+// Premium.belongsTo(User);
 
-User.hasMany(ResetPassword);
-ResetPassword.belongsTo(User);
+// User.hasMany(ResetPassword);
+// ResetPassword.belongsTo(User);
 
-//{ force: true } - it is writen in sync(), when we want to crate the fresh tabel or update the table or table schema
-sequelize.sync().then((result) => { // ? How this .sync find the all module for creating table
-    app.listen(PORT, function (err) {
-        if (err) {
-            console.log(`Error in running the server: ${err}`);
-        }
-        console.log(`Server is running on port: ${PORT}`);
-    });
-}).catch((err) => {
-    console.log(err);
+// //{ force: true } - it is writen in sync(), when we want to crate the fresh tabel or update the table or table schema
+// sequelize.sync().then((result) => { // ? How this .sync find the all module for creating table
+//     app.listen(PORT, function (err) {
+//         if (err) {
+//             console.log(`Error in running the server: ${err}`);
+//         }
+//         console.log(`Server is running on port: ${PORT}`);
+//     });
+// }).catch((err) => {
+//     console.log(err);
+// });
+
+app.listen(PORT, function (err) {
+    if (err) {
+        console.log(`Error occur during runing the server: ${err}`)
+    }
+    console.log(`Server is running on port: ${PORT}`);
 });
